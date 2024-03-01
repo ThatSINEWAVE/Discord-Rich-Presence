@@ -8,6 +8,16 @@ This repository contains a customizable Discord Rich Presence script, allowing y
 - **Dynamic Updating**: Presence updates are sent periodically based on the specified timer interval.
 - **User-Friendly Commands**: Easy-to-use commands to control and customize the script's behavior.
 
+# Prerequisites
+
+Before using this script, ensure you have the following:
+
+- **Python 3.6 or higher**: The script requires Python to be installed on your system. You can download Python from [python.org](https://www.python.org/downloads/).
+- **Discord Application**: You need a Discord application to use Discord Rich Presence. If you don't have one, you can create it [here](https://discord.com/developers/applications).
+- **pypresence**: This script relies on the pypresence library to interact with Discord's Rich Presence API.
+
+
+
 ## Installation
 
 Clone this repository to your local machine:
