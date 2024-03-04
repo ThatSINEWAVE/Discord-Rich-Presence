@@ -2,7 +2,10 @@
 
 Sinewave's CustomRP is a Python script designed to offer you the flexibility to showcase a fully customizable status (rich presence) on Discord. By leveraging the pypresence library, users can dynamically update their Discord presence with a variety of details, including project status, current activity, and more. This README provides all necessary details to get started, customize, and use the script effectively.
 
-## Features
+![MAIN MENU](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/2d27c186-c6a5-4f2e-b1de-9fc24495fd87)
+
+## Features!
+
 
 - **Multiple Rich Presence Configurations**: Configure and cycle through multiple rich presence settings as defined in a `config.json` file.
 - **Dynamic Presence Updates**: Automatically update your Discord presence at specified intervals.
@@ -53,6 +56,7 @@ python main.py
 ```
 
 ### Use Commands:
+![Help Menu](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/62215903-882d-4a0e-89aa-b7da6c1123a3)
 
 Once the script is running, it will prompt you for commands. Use the help command to see all available options:
 
@@ -73,7 +77,7 @@ Contributions, issues, and feature requests are welcome! Feel free to fork the r
 
 This project is open-source and available under the MIT License. See the LICENSE file for more details.
 
-## Disclaimer:
+## Disclaimer
 
 This script is not affiliated with or endorsed by Discord.
 Use this script responsibly and in accordance with Discord's guidelines and terms of service.
