@@ -1,94 +1,79 @@
-# Custom DiscordRP - Fully Customizable Rich Presence
+# Sinewave's CustomRP - Discord Rich Presence
 
-This repository contains a customizable Discord Rich Presence script, allowing you to showcase various activities and statuses on your Discord profile. The script provides flexibility in configuring different presence sets, including details, images, buttons, and more.
+Sinewave's CustomRP is a Python script designed to offer you the flexibility to showcase a fully customizable status (rich presence) on Discord. By leveraging the pypresence library, users can dynamically update their Discord presence with a variety of details, including project status, current activity, and more. This README provides all necessary details to get started, customize, and use the script effectively.
 
 ## Features
 
-- **Fully Customizable**: You can define multiple presence sets with different details, images, buttons, and timestamps.
-- **Dynamic Updating**: Presence updates are sent periodically based on the specified timer interval.
-- **User-Friendly Commands**: Easy-to-use commands to control and customize the script's behavior.
+- **Multiple Rich Presence Configurations**: Configure and cycle through multiple rich presence settings as defined in a `config.json` file.
+- **Dynamic Presence Updates**: Automatically update your Discord presence at specified intervals.
+- **Customizable Elements**: Set detailed states, images, buttons, and more for each rich presence configuration.
+- **Interactive Commands**: Control the script in real-time using command-line inputs.
+- **Extensive Customization**: Utilize a wide array of parameters for rich presence, including details, state, images, and clickable buttons linking to external URLs.
 
-# Prerequisites
+## Prerequisites
 
-Before using this script, ensure you have the following:
-
-- **Python 3.6 or higher**: The script requires Python to be installed on your system. You can download Python from [python.org](https://www.python.org/downloads/).
-- **Discord Application**: You need a Discord application to use Discord Rich Presence. If you don't have one, you can create it [here](https://discord.com/developers/applications).
-- **pypresence**: This script relies on the pypresence library to interact with Discord's Rich Presence API.
-
-
+- **Python 3.6+**: Ensure Python is installed on your system. The script is compatible with Python 3.6 and newer versions.
+- **pypresence Library**: A Python library that allows interaction with Discord's Rich Presence feature.
 
 ## Installation
 
-Clone this repository to your local machine:
+1. **Install Python**: Download and install Python 3.6 or newer from the official Python website.
 
-```bash
-git clone https://github.com/ThatSINEWAVE/Custom-DiscordRP.git
-```
-
-### Install the required dependencies by running:
+2. **Install pypresence**: Open a terminal or command prompt and install the pypresence library using pip:
 
 ```python
-pip install -r requirements.txt
+pip install pypresence
 ```
 
-## Configuration
+3. **Download the Script**: Download the Custom Discord Rich Presence script and the sample `config.json` file to your desired directory.
 
-The `config.json` file contains all the configuration settings for the script.
-You can customize the following parameters:
+## Configuration (config.json)
 
-**application_id**: Your Discord application ID.
-**timer_interval**: Interval (in seconds) for updating the presence.
-**message_sets**: Define different presence sets with various details, images, buttons, and timestamps.
-Modify the `config.json` file according to your preferences before running the script.
+The ``config.json`` file is where you define your rich presence configurations. Here's a breakdown of the file structure:
 
-### Example Configuration
+- `application_id`: Your Discord application ID.
+- `timer_interval`: The interval (in seconds) at which the rich presence updates cycle through the configured messages.
+- `message_sets`: An array of message configurations, each with the following fields:
+- `name`: A unique identifier for the configuration.
+- `details`, state: Text fields for setting the user's current activity.
+- `large_image`, `small_image`: URLs or keys for the images to display.
+- `large_text`, `small_text`: Hover texts for the images.
+- `buttons`: An array of buttons, each with a label and a url.
+- `party_size`: (Optional) Displays the current and maximum size of a party.
+- `startTimestamp`, `endTimestamp`: (Optional) Timestamps to show elapsed or remaining time.
 
-```json
-{
-    "application_id": "YOUR_APPLICATION_ID",
-    "timer_interval": 6,
-    "message_sets": [
-        {
-            "name": "TEXT SET 1",
-            "details": {
-                "text": "Future Playtest Q2 2024",
-                "enabled": true
-            },
-            // Other configuration parameters...
-        },
-        {
-            "name": "TEXT SET 2",
-            "details": {
-                "text": "Future Playtest Q2 2024",
-                "enabled": true
-            },
-            // Other configuration parameters...
-        }
-    ]
-}
-```
+Refer to the provided config.json example for more detailed configurations.
 
 ## Usage
 
-To start the script, run main.py:
+- **Start the Script**: Navigate to the script's directory in a terminal or command prompt and execute the script:
 
 ```python
 python main.py
 ```
 
-Once the script is running, you can interact with it using the following commands:
+### Use Commands:
 
-- **start**: Starts the Discord Rich Presence with the configured settings.
-- **stop**: Stops the Discord Rich Presence.
-- **timer <seconds>**: Sets the update interval for the presence.
-- **appid <application_id>**: Updates the application ID used for the presence.
-- **quit**: Exits the script.
-- **help**: Displays a list of available commands and their usage.
-- **about**: Provides information about the script and its author.
+Once the script is running, it will prompt you for commands. Use the help command to see all available options:
+
+- `start`: Initiates the rich presence update process.
+- `stop`: Halts any ongoing rich presence updates.
+- `mode <all|single>`: Sets the update mode to cycle through all configured messages or stick to a single one.
+- `timer <seconds>`: Adjusts the interval between updates.
+- `appid <application_id>`: Updates the Discord application ID used for the rich presence.
+- `help`: Displays a list of available commands.
+- `about`: Shows information about the script.
+- `quit`: Exits the script.
 
 ## Contributing
-Your contributions are welcome! Whether it's adding new features, improving documentation, or reporting bugs, please feel free to fork this repository and submit a pull request.
+
+Contributions, issues, and feature requests are welcome! Feel free to fork the repository and submit pull requests.
 
 ## License
-This project is open-sourced under the MIT License.
+
+This project is open-source and available under the MIT License. See the LICENSE file for more details.
+
+## Disclaimer:
+
+This script is not affiliated with or endorsed by Discord.
+Use this script responsibly and in accordance with Discord's guidelines and terms of service.
