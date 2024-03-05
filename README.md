@@ -56,13 +56,13 @@ python main.py
 ```
 
 ### Use Commands:
-![Help Menu](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/62215903-882d-4a0e-89aa-b7da6c1123a3)
+![HELP MENU](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/18334003-e11a-4771-8e31-e7ae5f3820b3)
 
 Once the script is running, it will prompt you for commands. Use the help command to see all available options:
 
 - `start`: Initiates the rich presence update process.
 - `stop`: Halts any ongoing rich presence updates.
-- `mode <all|single>`: Sets the update mode to cycle through all configured messages or stick to a single one.
+- `mode <all|multi|single>`: Sets the update mode to cycle through all configured messages, stick to a single one or choose multiple ones.
 - `timer <seconds>`: Adjusts the interval between updates.
 - `appid <application_id>`: Updates the Discord application ID used for the rich presence.
 - `help`: Displays a list of available commands.
