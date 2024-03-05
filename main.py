@@ -5,6 +5,7 @@ import threading
 import sys
 import itertools
 import os
+import queue
 
 
 def load_config():
@@ -23,6 +24,7 @@ presence_thread = None
 stop_event = threading.Event()
 mode = "all"  # Default mode is 'all'
 show_timestamps = True
+command_queue = queue.Queue()
 welcome_art = r"""
    _____  _____  _   _  ______ __          __  __      __ ______  _  _____ 
   / ____||_   _|| \ | ||  ____|\ \        / //\\ \    / /|  ____|( )/ ____|
@@ -41,13 +43,10 @@ welcome_art = r"""
     """
 
 
-def custom_print(message):
-    """Prints a message with a timestamp if enabled."""
-    timestamp = time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime())
-    if show_timestamps:
-        print(message.replace("{TIME_STAMP}", timestamp))
-    else:
-        print(message.replace("{TIME_STAMP} ", ""))
+def command_input_thread():
+    while True:
+        cmd = input("[CustomRP] Enter command: ").strip().lower()
+        command_queue.put(cmd)
 
 
 def clear_console():
@@ -55,13 +54,39 @@ def clear_console():
 
 
 def animated_countdown(duration, prefix=""):
+    global stop_event, command_queue
     symbols = itertools.cycle(['|', '/', '-', '\\'])
     end_time = time.time() + duration
-    while time.time() < end_time:
+
+    while time.time() < end_time and not stop_event.is_set():
         sys.stdout.write(f"\r{prefix} {next(symbols)}  Remaining: {int(end_time - time.time())}s ")
         sys.stdout.flush()
-        time.sleep(0.1)
-    sys.stdout.write('\rDone!                                        \n')
+
+        # Check for commands more frequently within the countdown
+        for _ in range(10):  # Split the sleep into smaller intervals for responsiveness
+            time.sleep(0.01)
+
+            # Check for new commands in the command queue
+            try:
+                cmd = command_queue.get_nowait()
+                if cmd == "stop":
+                    clear_console()
+                    print(welcome_art)
+                    print("[CustomRP] Stopping Rich Presence...")
+                    stop_event.set()
+                    return  # Exit the countdown early
+                else:
+                    clear_console()
+                    print(welcome_art)
+                    print("[CustomRP] Rich Presence is active. Only 'stop' command is accepted.")
+            except queue.Empty:
+                # Queue is empty, no commands to process
+                pass
+
+        if stop_event.is_set():
+            return  # Check if stop_event has been set to exit early
+
+    sys.stdout.write('\r[CustomRP] Done!                                        \n')
 
 
 def update_presence(application_id, message_sets, timer_interval, presence_mode):
@@ -74,19 +99,19 @@ def update_presence(application_id, message_sets, timer_interval, presence_mode)
     except Exception as e:
         print(f"[CustomRP] Could not connect to Discord RPC: {e}")
         return
-
     index = 0
     animation_symbols = itertools.cycle(['|', '/', '-', '\\'])
     while not stop_event.is_set():
         clear_console()
         print(welcome_art)
-        if index >= len(message_sets) and presence_mode == "all":
-            index = 0  # Reset index if out of range for 'all' mode
+        # This check ensures we loop through message_sets correctly in 'all' and 'multi' modes
+        if index >= len(message_sets):
+            index = 0  # Reset index if out of range
 
         current_set = message_sets[index]
         set_name = current_set.get('name', f'Set {index + 1}')
 
-        # Construct the kwargs for RPC.update()
+        # Constructs kwargs for RPC.update()
         update_kwargs = {
             "state": current_set["state"]["text"] if "state" in current_set and current_set["state"].get("enabled",
                                                                                                          False) else "",
@@ -115,14 +140,11 @@ def update_presence(application_id, message_sets, timer_interval, presence_mode)
         try:
             RPC.update(**update_kwargs)
             symbol = next(animation_symbols)
-            custom_print(f"[CustomRP] Current presence: '{set_name}' {symbol}")
-            if mode == "all":
-                # For 'all' mode, use animated countdown for each presence update
-                animated_countdown(timer_interval, prefix=f"[CustomRP] Next update in:")
-                index += 1  # Move to the next presence set
-            else:
-                # For 'single' mode, maintain current presence without incrementing index
-                animated_countdown(timer_interval, prefix=f"[CustomRP] Maintaining presence: '{set_name}'")
+            print(f"[CustomRP] Current presence: '{set_name}' {symbol}")
+            # Increment the index for 'all' and 'multi' modes to cycle through message sets
+            if presence_mode in ["all", "multi"]:
+                index += 1
+            animated_countdown(timer_interval, prefix=f"[CustomRP] Next update in:")
         except Exception as e:
             print(f"[CustomRP] Failed to update Discord presence: {e}")
             break  # Exit the loop on failure to update presence
@@ -147,7 +169,7 @@ def handle_command(command):
         print("[CustomRP] Available commands:")
         print("[CustomRP] start - Starts the Discord Rich Presence.")
         print("[CustomRP] stop - Stops the Discord Rich Presence.")
-        print("[CustomRP] mode <all|single> - Sets the mode to either 'all' or 'single'.")
+        print("[CustomRP] mode <all|multi|single> - Sets the mode to either 'all', 'multi' or 'single'.")
         print("[CustomRP] timer <seconds> - Sets the update interval for the presence.")
         print("[CustomRP] appid <application_id> - Updates the application ID.")
         print("[CustomRP] help - You are here, this is the help command :)")
@@ -167,7 +189,7 @@ def handle_command(command):
 
         stop_event.clear()  # Reset the stop event for the new thread
 
-        custom_print("[CustomRP] Starting Discord Rich Presence in '{}' mode.".format(mode))
+        print("[CustomRP] Starting Discord Rich Presence in '{}' mode.".format(mode))
         presence_thread = threading.Thread(target=update_presence, args=(
             config["application_id"], config["message_sets"], config["timer_interval"], mode))
         presence_thread.start()
@@ -178,8 +200,9 @@ def handle_command(command):
             if presence_thread.is_alive():
                 presence_thread.join()
             presence_thread = None
-            print("[CustomRP] Discord Rich Presence has been stopped.")
-            print("[CustomRP] Please wait a second for Discord to update.")
+            print("[CustomRP] Stopping Rich Presence...")
+            print("[CustomRP] Discord RPC connection closed.")
+            print("[CustomRP] Enter command: ")
 
     elif command_name == "timer":
         if len(command_args) == 1:
@@ -221,7 +244,8 @@ def handle_command(command):
         mode_args = command.split(maxsplit=1)
         if len(mode_args) < 2:
             print("[CustomRP] Please select a mode: 'all', 'single', or 'multi'.")
-            print("[CustomRP] Use 'mode all', 'mode single', or type 'mode multi' and enter names of the parts afterwards.")
+            print(
+                "[CustomRP] Use 'mode all', 'mode single', or type 'mode multi' and enter names of the parts afterwards.")
             return
         _, selected_mode = mode_args
         if selected_mode == "all" or selected_mode == "single":
@@ -236,7 +260,8 @@ def handle_command(command):
                 else:
                     print("[CustomRP] Specified part not found in config.json.")
         elif selected_mode == "multi":
-            names_input = input("[CustomRP] Enter the names of the parts you want to use, separated by a comma: ").strip()
+            names_input = input(
+                "[CustomRP] Enter the names of the parts you want to use, separated by a comma: ").strip()
             names = [name.strip() for name in names_input.split(',')]
             selected_sets = [part for part in config["message_sets"] if part.get("name") in names]
             if selected_sets:
@@ -245,61 +270,8 @@ def handle_command(command):
                 print(f"[CustomRP] Mode set to multi, using parts: {', '.join(names)}")
             else:
                 print("[CustomRP] Specified parts not found in config.json.")
-    elif command.startswith("mode"):
-        mode_args = command.split(maxsplit=1)
-        if len(mode_args) < 2:
-            print("[CustomRP] Please select a mode: 'all', 'single', or 'multi'.")
-            print("[CustomRP] Use 'mode all', 'mode single', or 'mode multi <NAME_1, NAME_2, ...>'.")
-            return
-        mode_type, *mode_values = mode_args[1].split(maxsplit=1)
-        if mode_type in ["all", "single"]:
-            mode = mode_type
-            print(f"[CustomRP] Mode set to {mode}.")
-            if mode == "single" and mode_values:
-                message_name = mode_values[0]
-                found = any(part.get("name") == message_name for part in config["message_sets"])
-                if found:
-                    config["message_sets"] = [part for part in config["message_sets"] if
-                                              part.get("name") == message_name]
-                    print(f"[CustomRP] Mode set to single, using part: {message_name}")
-                else:
-                    print("[CustomRP] Specified part not found in config.json.")
-        elif mode_type == "multi" and mode_values:
-            names = [name.strip() for name in mode_values[0].split(',')]
-            selected_sets = [part for part in config["message_sets"] if part.get("name") in names]
-            if selected_sets:
-                config["message_sets"] = selected_sets
-                mode = "multi"
-                print(f"[CustomRP] Mode set to multi, using parts: {', '.join(names)}")
-            else:
-                print("[CustomRP] Specified parts not found in config.json.")
-        else:
-            print("[CustomRP] Invalid mode.")
-            print("[CustomRP] Use 'mode all', 'mode single <NAME>', or 'mode multi <NAME_1, NAME_2, ...>'.")
-    elif command.startswith("mode"):
-        mode_args = command.split(maxsplit=1)
-        if len(mode_args) < 2:
-            print("[CustomRP] Please select a mode: 'all' or 'single'.")
-            print("[CustomRP] Use 'mode all' or 'mode single'.")
-            return
-        _, selected_mode = mode_args
-        if selected_mode in ["all", "single"]:
-            mode = selected_mode
-            print("[CustomRP] Mode set to {}.".format(mode))
-            if mode == "single":
-                message_name = input("[CustomRP] Enter the name of the part you want to use: ").strip()
-                for part in config["message_sets"]:
-                    if part.get("name") == message_name:
-                        config["message_sets"] = [part]
-                        print("[CustomRP] Mode set to single, using part: {}".format(message_name))
-                        return
-                print("[CustomRP] Specified part not found in config.json.")
-        else:
-            print("[CustomRP] Invalid mode.")
-            print("[CustomRP] Use 'mode all' or 'mode single'.")
-
     else:
-        print("[CustomRP] Unknown command.")
+        print(f"[CustomRP] '{command_name}' is not a known command. Please try again.")
         print("[CustomRP] Type 'help' for a list of commands.")
 
 
@@ -309,6 +281,13 @@ if __name__ == "__main__":
     print("[CustomRP] Welcome to ThatSINEWAVE's custom rich presence script!")
     print("[CustomRP] To get started, please type 'help'")
 
+    # Start the command input thread
+    input_thread = threading.Thread(target=command_input_thread, daemon=True)
+    input_thread.start()
+
     while True:
-        user_input = input("[CustomRP] Enter command: ").strip().lower()
-        handle_command(user_input)
+        if not command_queue.empty():
+            user_input = command_queue.get()
+            handle_command(user_input)
+        else:
+            time.sleep(0.1)  # Adjust as necessary for responsiveness vs CPU usage
