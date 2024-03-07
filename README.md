@@ -56,7 +56,7 @@ python main.py
 ```
 
 ### Use Commands:
-![HELP MENU](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/18334003-e11a-4771-8e31-e7ae5f3820b3)
+![HELP MENU](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/6d4ea699-89a9-4417-a936-fc81f9718e6e)
 
 Once the script is running, it will prompt you for commands. Use the help command to see all available options:
 
