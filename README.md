@@ -66,6 +66,7 @@ Once the script is running, it will prompt you for commands. Use the help comman
 - `timer <seconds>`: Adjusts the interval between updates.
 - `appid <application_id>`: Updates the Discord application ID used for the rich presence.
 - `help`: Displays a list of available commands.
+- `info`: Information about your current setup.
 - `about`: Shows information about the script.
 - `quit`: Exits the script.
 
