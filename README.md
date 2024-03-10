@@ -32,6 +32,8 @@ pip install pypresence
 
 ## Configuration (config.json)
 
+![Premade Configs](https://github.com/ThatSINEWAVE/Discord-Rich-Presence/assets/133239148/b11d6f30-e320-4b13-a555-ccf95cce9924)
+
 The ``config.json`` file is where you define your rich presence configurations. Here's a breakdown of the file structure:
 
 - `application_id`: Your Discord application ID.
@@ -56,6 +58,7 @@ python main.py
 ```
 
 ### Use Commands:
+
 ![HELP MENU](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/6d4ea699-89a9-4417-a936-fc81f9718e6e)
 
 Once the script is running, it will prompt you for commands. Use the help command to see all available options:
