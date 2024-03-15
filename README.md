@@ -13,6 +13,8 @@ Sinewave's CustomRP is a Python script designed to offer you the flexibility to 
 - **Interactive Commands**: Control the script in real-time using command-line inputs.
 - **Extensive Customization**: Utilize a wide array of parameters for rich presence, including details, state, images, and clickable buttons linking to external URLs.
 
+## ☕ [Support my work on Ko-Fi](https://ko-fi.com/thatsinewave)
+
 ## Prerequisites
 
 - **Python 3.6+**: Ensure Python is installed on your system. The script is compatible with Python 3.6 and newer versions.
