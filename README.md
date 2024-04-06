@@ -13,7 +13,6 @@ Sinewave's CustomRP is a Python script designed to offer you the flexibility to 
 </div>
 
 ## Features!
-
 - **Multiple Rich Presence Configurations**: Configure and cycle through multiple rich presence settings as defined in a `config.json` file.
 - **Dynamic Presence Updates**: Automatically update your Discord presence at specified intervals.
 - **Customizable Elements**: Set detailed states, images, buttons, and more for each rich presence configuration.
