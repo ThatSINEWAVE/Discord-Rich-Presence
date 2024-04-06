@@ -1,11 +1,18 @@
+<div align="center">
+
 # Sinewave's CustomRP - Discord Rich Presence
 
 Sinewave's CustomRP is a Python script designed to offer you the flexibility to showcase a fully customizable status (rich presence) on Discord. By leveraging the pypresence library, users can dynamically update their Discord presence with a variety of details, including project status, current activity, and more. This README provides all necessary details to get started, customize, and use the script effectively.
 
+</div>
+
+<div align="center">
+ 
  ![MAIN MENU](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/2d27c186-c6a5-4f2e-b1de-9fc24495fd87)
 
-## Features!
+</div>
 
+## Features!
 
 - **Multiple Rich Presence Configurations**: Configure and cycle through multiple rich presence settings as defined in a `config.json` file.
 - **Dynamic Presence Updates**: Automatically update your Discord presence at specified intervals.
@@ -13,7 +20,11 @@ Sinewave's CustomRP is a Python script designed to offer you the flexibility to 
 - **Interactive Commands**: Control the script in real-time using command-line inputs.
 - **Extensive Customization**: Utilize a wide array of parameters for rich presence, including details, state, images, and clickable buttons linking to external URLs.
 
+<div align="center">
+
 ## ☕ [Support my work on Ko-Fi](https://ko-fi.com/thatsinewave)
+
+</div>
 
 ## Prerequisites
 
@@ -34,7 +45,11 @@ pip install pypresence
 
 ## Configuration (config.json)
 
+<div align="center">
+
 ![Premade Configs](https://github.com/ThatSINEWAVE/Discord-Rich-Presence/assets/133239148/b11d6f30-e320-4b13-a555-ccf95cce9924)
+
+</div>
 
 The ``config.json`` file is where you define your rich presence configurations. Here's a breakdown of the file structure:
 
@@ -61,7 +76,11 @@ python main.py
 
 ### Use Commands:
 
+<div align="center">
+
 ![HELP MENU](https://github.com/ThatSINEWAVE/Custom-DiscordRP/assets/133239148/6d4ea699-89a9-4417-a936-fc81f9718e6e)
+
+</div>
 
 Once the script is running, it will prompt you for commands. Use the help command to see all available options:
 
